@@ -1,0 +1,91 @@
+# Level 04 CI - Pipeline Integrated with Code Build
+
+# pipeline name
+name: 'N4 - Integrated Execution'
+
+# triggers - workflow start rules
+# manual trigger = workflow_dispatch
+# scheduled trigger = schedule
+# trigger on completion of another workflow = workflow_run
+
+on:
+  workflow_dispatch:
+# tasks inside the pipeline = jobs
+
+jobs:
+  # job name
+  inspection:
+    # machine where the job runs
+    runs-on: ubuntu-latest
+
+    # job steps
+    steps:
+      # clone the repository
+      - uses: actions/checkout@v4
+
+      # install Node.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      # install Yarn
+      - name: Installing Yarn
+        run: npm install -g yarn
+
+      # install dependencies
+      - name: Installing dependencies
+        run: yarn
+
+      - name: Code Inspection
+        run: yarn lint
+
+  unit:
+    runs-on: ubuntu-latest
+    needs: [inspection]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      - name: Installing Yarn
+        run: npm install -g yarn
+
+      - name: Installing dependencies
+        run: yarn
+
+      - name: Running unit tests
+        run: yarn run test
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: [inspection]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      - name: Installing Yarn
+        run: npm install -g yarn
+
+      - name: Installing dependencies
+        run: yarn
+
+      - name: Installing Playwright Browsers
+        run: yarn playwright install
+
+      - name: Running E2E tests
+        run: yarn run e2e
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [unit, e2e-tests]
+
+    steps:
+      - name: Deploy Simulation
+        run: echo 'Deploy in progress...'

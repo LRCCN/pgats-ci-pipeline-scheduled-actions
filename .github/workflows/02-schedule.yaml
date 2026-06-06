@@ -1,49 +1,49 @@
-# CI de Nível 02 - Execução Agendada
+# Level 02 CI - Scheduled Execution
 
-# nome da pipeline
+# pipeline name
 name: "Scheduled Execution"
 
-# gatilhos / triggers - regras de disparo
-# gatilho manual = workflow_dispatch
-# gatilho agendado = schedule
-# formato do cron: https://crontab.guru/
-# exemplo: "0 0 * * *" = todos os dias à meia-noite
+# triggers - workflow start rules
+# manual trigger = workflow_dispatch
+# scheduled trigger = schedule
+# cron format: https://crontab.guru/
+# example: "0 0 * * *" = every day at midnight
 
 on:
     workflow_dispatch:
     schedule:
-        - cron: "*/5 * * * *" # a cada 5 minutos
+        - cron: '*/5 * * * *' # every 5 minutes
 
-#tarefas dentro da pipeline = jobs
+# tasks inside the pipeline = jobs
 
 jobs:
-    #nome do job
+    # job name
     e2e-tests:
-        # maquina onde o job vai rodar
+        # machine where the job runs
         runs-on: ubuntu-latest
 
-        # passos do job
+        # job steps
         steps:
-            # clone do projeto
+            # clone the repository
             - uses: actions/checkout@v4
 
-            # instalção do node
+            # install Node.js
             - uses: actions/setup-node@v4
               with:
                   node-version: 24.x
 
-            # instalação do Yarn
-            - name: Instalando Yarn
+            # install Yarn
+            - name: Installing Yarn
               run: npm install -g yarn
             
-            #   instalação das dependências
-            - name: Instalando dependências
+            # install dependencies
+            - name: Installing dependencies
               run: yarn
             
-            # instalação dos Browsers do Playwright
-            - name: Instalando Browsers do Playwright
+            # install Playwright browsers
+            - name: Installing Playwright Browsers
               run: yarn playwright install
             
-            # executar os testes e2e
-            - name: Executando testes e2e
+            # run e2e tests
+            - name: Running e2e tests
               run: yarn run e2e
