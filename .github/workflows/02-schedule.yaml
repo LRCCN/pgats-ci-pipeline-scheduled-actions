@@ -12,7 +12,7 @@ name: "Scheduled Execution"
 on:
     workflow_dispatch:
     schedule:
-        - cron: "10 0 * * 6" # toda sexta-feira às 21:10 BRT (sábado 00:10 UTC)
+        - cron: "*/5 * * * *" # a cada 5 minutos
 
 #tarefas dentro da pipeline = jobs
 
